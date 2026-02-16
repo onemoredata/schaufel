@@ -90,21 +90,12 @@ _cpycmd(const char *host, const char *generation, postgres_format fmt)
     }
 
     int ret;
-    if (fmt == POSTGRES_CSV || fmt == POSTGRES_BINARY)
-    {
-        char *fmt = "COPY %s FROM STDIN (FORMAT %s)";
-        int len = strlen(fmt) + strlen(generation) + strlen(format) + 20;
-        cpycmd = SCALLOC(len, 1);
-        ret = snprintf(cpycmd, len, fmt, generation, format);
-    }
-    else
-    {
-        char *fmt = "COPY %s_%d_%s.data FROM STDIN (FORMAT %s)";
-        int len = strlen(fmt) + strlen(hostname) + strlen(generation) + strlen(format) + 20;
-        cpycmd = SCALLOC(len, 1);
-        ret = snprintf(cpycmd, len, fmt, hostname, port, generation, format);
-    }
-
+    
+    char *cpyfmt = "COPY %s FROM STDIN (FORMAT %s)";
+    int len = strlen(cpyfmt) + strlen(generation) + strlen(format) + 20;
+    cpycmd = SCALLOC(len, 1);
+    ret = snprintf(cpycmd, len, cpyfmt, generation, format);
+   
     if (ret < 0)
     {
         logger_log("%s %d: error while formatting COPY query string",

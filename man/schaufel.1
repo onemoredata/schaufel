@@ -56,6 +56,9 @@ Consumer thread count: 1-n
 .B \-p \fIinteger\fR
 Producer thread count: 1-n
 .TP
+.B \-D \fIdbname\fR
+Database name to connect to (Postgres only)
+.TP
 .B \-b|\-B \fIbrokername\fR
 Broker name/address (kafka consumer/producer only)
 .TP
@@ -110,9 +113,9 @@ As a producer it'll simply write to a topic.
 .SS redis
 As a consumer, schaufel will LPUSH from a list. As a producer it'll BLPOP.
 .SS postgres
-Postgres has no consumer. As a producer schaufel will write messages to a
-table called \fIschema\fR.data. Schema depends on host name, port and topic
-(generation id). The table may only contain a single jsonb tuple. If the
+Postgres has no consumer. As a producer, Schaufel will write to a table where
+the fully qualified table name is the configured producer topic.  The table
+must have only one column which must be able to accept a JSON document. If the
 list of host names contains a semicolon, schaufel will replicate messages
 to the host names listed after the semicolon.
 .SS exports
