@@ -24,7 +24,7 @@ struct pg_parameters {
     const char     *dbname;
     const char     *user;
     const char     *host_replica;
-    const char     *generation;
+    const char     *table;
     postgres_format fmt;
 };
 
@@ -54,7 +54,7 @@ _connectinfo(const char *host, const char *dbname, const char *user)
 }
 
 static char *
-_cpycmd(const char *host, const char *generation, postgres_format fmt)
+_cpycmd(const char *host, const char *table, postgres_format fmt)
 {
     const char *format;
     char       *cpycmd;
@@ -92,9 +92,9 @@ _cpycmd(const char *host, const char *generation, postgres_format fmt)
     int ret;
     
     char *cpyfmt = "COPY %s FROM STDIN (FORMAT %s)";
-    int len = strlen(cpyfmt) + strlen(generation) + strlen(format) + 20;
+    int len = strlen(cpyfmt) + strlen(table) + strlen(format) + 20;
     cpycmd = SCALLOC(len, 1);
-    ret = snprintf(cpycmd, len, cpyfmt, generation, format);
+    ret = snprintf(cpycmd, len, cpyfmt, table, format);
    
     if (ret < 0)
     {
@@ -124,7 +124,7 @@ read_pg_params(struct pg_parameters *p, config_setting_t *config)
     config_setting_lookup_string(config, "dbname", &p->dbname);
     config_setting_lookup_string(config, "user", &p->user);
     config_setting_lookup_string(config, "replica", &p->host_replica);
-    config_setting_lookup_string(config, "topic", &p->generation);
+    config_setting_lookup_string(config, "topic", &p->table);
     config_setting_lookup_string(config, "format", &format);
 
     assert(format != NULL);
@@ -146,7 +146,7 @@ postgres_meta_init(struct pg_parameters *p)
 {
     Meta m = SCALLOC(1, sizeof(*m));
 
-    m->cpycmd = _cpycmd(p->host, p->generation, p->fmt);
+    m->cpycmd = _cpycmd(p->host, p->table, p->fmt);
     m->conninfo = _connectinfo(p->host, p->dbname, p->user);
     m->cpyfmt = (int) p->fmt;
 
@@ -399,7 +399,7 @@ postgres_validate(config_setting_t *config)
             __FILE__, __LINE__, replicas);
         ret = false;
     }
-    if(!CONF_L_IS_STRING(config, "topic", &topic, "need a topic/generation!"))
+    if(!CONF_L_IS_STRING(config, "topic", &topic, "need a topic/table!"))
         ret = false;
     if(!ret) goto error;
 
