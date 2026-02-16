@@ -23,6 +23,7 @@ typedef struct Options {
     char *out_file;
     char *out_groupid;
     char *out_topic;
+    char *out_dbname;
     char *logger;
     Array in_hosts;
     Array out_hosts;

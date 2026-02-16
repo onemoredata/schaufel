@@ -56,6 +56,7 @@ print_usage()
            "                r : redis\n"
            "-c      : consumer_threads\n"
            "-p      : producer_threads\n"
+           "-D      : producer_dbname\n"
            "-b | -B : consumer / producer broker (only kafka)\n"
            "-g | -G : consumer / producer groupid (only kafka)\n"
            "-h | -H : consumer / producer host (redis,postgres,exports)\n"
@@ -274,7 +275,7 @@ main(int argc, char **argv)
     config_t config;
     config_init(&config);
 
-    while ((opt = getopt(argc, argv, "l:i:o:c:p:b:h:g:t:f:s:B:C:H:G:T:F:S:V")) != -1)
+    while ((opt = getopt(argc, argv, "l:i:o:c:p:D:b:h:g:t:f:s:B:C:H:G:T:F:S:V")) != -1)
     {
         switch (opt)
         {
@@ -294,6 +295,9 @@ main(int argc, char **argv)
             case 'p':
                 producer_threads += atoi(optarg);
                 o.producer_threads = producer_threads;
+                break;
+            case 'D':
+                o.out_dbname = optarg;
                 break;
             case 'b':
                 o.in_broker = optarg;

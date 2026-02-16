@@ -325,6 +325,10 @@ config_merge(config_t* config, Options o)
             setting = _add_member(parent, "host", CONFIG_TYPE_STRING);
             config_setting_set_string(setting, o.out_host);
         }
+        if (o.out_dbname) {
+            setting = _add_member(parent, "dbname", CONFIG_TYPE_STRING);
+            config_setting_set_string(setting, o.out_dbname);
+        }
         if (o.out_groupid) {
             setting = _add_member(parent, "groupid", CONFIG_TYPE_STRING);
             config_setting_set_string(setting, o.out_groupid);

@@ -129,11 +129,8 @@ producers = (
     {
         type = "postgres";
         threads = 1;
-        # topic and host name are mangled
-        # into the table to be inserted to.
-        # In this case that would be:
-        # bagger_1_5432_test.data
-        topic = "test";
+        # The topic becomes the tablename for ingestion
+        topic = "bagger_1_5432_test.data";
         host = "bagger-1:5432";
     } );
 .RE
@@ -252,16 +249,21 @@ producers = (
     {
         type = "postgres";
         threads = 5;
-        topic = "15";
-        host = "bagger-1:5432,bagger-1:5433,bagger-1:5434;bagger-2:5432,bagger-2:5433,bagger-2:5434";
+        topic = "bagger_1_5432_14.data";
+        host = "bagger-1:5432;bagger-1:5433";
     } );
 .RE
 .PP
 This configuration creates 5 threads per host specified. Hosts are separated
-by commas. Hosts before the semicolon are masters, whereas the others
-receive replicas of messages. Messages are distributed in no particular
-order.
-
+by commas. 
+.PP
+\fBNOTE:\fR  In prior versions, a semicolon was used to differentiate \fImasters\fR 
+from \fIreplicas\fR using a semicolon.  This allowed ordered data to be written
+to two systems independently. The current system is limited to a single master
+and single replica, but future versions will allow multiple replicas.  The topic
+now specifies the ingestion table, while in the past this was generated from
+the host, port, and topic.
+.PP
 .SS exports
 Exports is also a producer to postgres. Unlike bagger, it takes json data
 and dereferences it into columns of a type. At the moment only
