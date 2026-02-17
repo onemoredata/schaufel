@@ -62,6 +62,9 @@ file_producer_produce(Producer p, Message msg)
     size_t ret;
 
     ret = fwrite(line, len, nmemb, ((Meta) p->meta)->fp);
+
+    /* have to add newline back to separate records. */
+    ret += fwrite("\n", (size_t) 1, (size_t) 1,((Meta) p->meta)->fp);
     if (ret < nmemb) {
         logger_log("%s %d: %s", __FILE__, __LINE__, strerror(errno));
         abort();
@@ -97,6 +100,7 @@ file_consumer_consume(Consumer c, Message msg)
     size_t  bufsize = 0;
     ssize_t read;
     int8_t err = errno;
+    size_t len;
     errno = 0;
     if ((read = getline(&line, &bufsize, ((Meta) c->meta)->fp)) == -1)
     {
@@ -114,8 +118,14 @@ file_consumer_consume(Consumer c, Message msg)
         return -1;
     }
     errno = err;
+
+    /* the newline has to be stripped because it can be misinterpreted by
+     * other producers.
+     */
+    len = strcspn(line, "\n"); 
+    line[len] =  '\0';
     message_set_data(msg, line);
-    message_set_len(msg, (size_t) read);
+    message_set_len(msg, len);
     return 0;
 }
 
