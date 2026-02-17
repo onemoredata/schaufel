@@ -1,3 +1,9 @@
+schaufel (0.12) unstable
+ * Table and schema for postgres is now fully configurable
+ * Can set tablename in cli flags for Postgres producer
+
+ -- Chris Travers <ct@onemoredata.com> 17 Feb 2025
+
 schaufel (0.11) unstable; urgency=low
 
   * support for callbacks via metadata (transactional producers) (Closes: #97) 

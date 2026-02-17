@@ -247,6 +247,7 @@ postgres_producer_produce(Producer p, Message msg)
         return;
     }
 
+    // Note this is being moved to the Postgres side'd responsibility. 
     if (m->cpyfmt != POSTGRES_BINARY)
     {
         char *s = strstr(buf, "\\u0000");

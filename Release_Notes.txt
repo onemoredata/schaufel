@@ -1,5 +1,8 @@
-1.1 [tbd] Table names are now configurable, and the database name can be
+Schaufel Release Notes
+
+
+0.12      Table names are now configurable, and the database name can be
           specified from the command line.  This requires changes to the
-          configuration and command line format.  See the schaufel.conf.5 man
+          configuration and command line format.  See the schaufel.conf (5) man
           page for more details.  In particular now the "topic" is the fully
           qualified table name.
