@@ -115,9 +115,10 @@ As a consumer, schaufel will LPUSH from a list. As a producer it'll BLPOP.
 .SS postgres
 Postgres has no consumer. As a producer, Schaufel will write to a table where
 the fully qualified table name is the configured producer topic.  The table
-must have only one column which must be able to accept a JSON document. If the
-list of host names contains a semicolon, schaufel will replicate messages
-to the host names listed after the semicolon.
+must have only one column which must be able to accept a JSON document (for
+example, a text, json, jsonb, or bytea field). If the list of host names 
+contains a semicolon, schaufel will replicate messages to the host names listed
+after the semicolon.
 .SS exports
 The exporter is also a postgres producer. It has no consumer. It takes a
 json message and dereferences elements (using json pointers) into postgres
