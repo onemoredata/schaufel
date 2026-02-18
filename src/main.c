@@ -68,10 +68,12 @@ print_usage()
            "                (used as topic name for kafka)\n"
            "                (used as generation id for postgres)\n"
            "-f | -F : consumer / producer filename (only file)\n"
-           "-s | -S : consumer / producer pipeline batch size (only redis)\n"
+           "-s | -S : consumer / producer pipeline batch size (Redis, Postgres)\n"
            "        :       Requires exactly one integer argument (default: 0)\n"
            "        :       0 disables pipelining\n"
            "        :       Redis: 10k is upstream recommended max\n"
+           "        :       Postgres Number of rows between commits (default 2000).\n"
+
            "-l      : path to the log file\n"
            "-V      : print version\n"
            "\n");

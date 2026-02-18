@@ -21,6 +21,7 @@ typedef struct Meta {
     int             count;
     int             copy;
     int             commit_iter;
+    int             pipeline_count;
     pthread_mutex_t commit_mutex;
     pthread_t       commit_worker;
     Internal        internal;

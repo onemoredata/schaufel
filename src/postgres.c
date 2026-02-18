@@ -20,6 +20,7 @@ typedef enum {
 } postgres_format;
 
 struct pg_parameters {
+    int             pipeline_count;
     const char     *host;
     const char     *dbname;
     const char     *user;
@@ -122,12 +123,14 @@ postgres_defaults(config_setting_t *c)
     config_set_default_string(c, "user", "postgres");
     config_set_default_string(c, "dbname", "data");
     config_set_default_string(c, "format", "json");
+    config_set_default_int(c, "pipeline", 2000);
 }
 
 static void
 read_pg_params(struct pg_parameters *p, config_setting_t *config)
 {
     const char *format;
+    int pcount;
 
     config_setting_lookup_string(config, "host", &p->host);
     config_setting_lookup_string(config, "dbname", &p->dbname);
@@ -135,6 +138,11 @@ read_pg_params(struct pg_parameters *p, config_setting_t *config)
     config_setting_lookup_string(config, "replica", &p->host_replica);
     config_setting_lookup_string(config, "topic", &p->generation);
     config_setting_lookup_string(config, "format", &format);
+
+    config_setting_lookup_int(config, "pipeline", &pcount);
+    p->pipeline_count = pcount;
+
+    logger_log("%s %d: Set pipeline count to %d", __FILE__, __LINE__, p->pipeline_count);
 
     assert(format != NULL);
     if (strcmp(format, "csv") == 0)
@@ -158,6 +166,7 @@ postgres_meta_init(struct pg_parameters *p)
     m->cpycmd = _cpycmd(p->host, p->generation, p->fmt);
     m->conninfo = _connectinfo(p->host, p->dbname, p->user);
     m->cpyfmt = (int) p->fmt;
+    m->pipeline_count = p->pipeline_count;
 
     m->conn_master = PQconnectdb(m->conninfo);
     if (PQstatus(m->conn_master) != CONNECTION_OK)
@@ -317,7 +326,7 @@ postgres_producer_produce(Producer p, Message msg)
     }
 
     m->count = m->count + 1;
-    if (m->count == 2000)
+    if (m->count == m->pipeline_count)
     {
         commit(&m);
     }

@@ -513,6 +513,26 @@ void config_set_default_string(config_setting_t *parent,
 }
 
 /*
+ * config_set_default_int
+ *      Sets the config setting of int type specified by a path in the form 
+ *      "group1/group2/setting_name". If path (or any its part) doesn't exist
+ *      it is created automatically.
+ */
+void
+config_set_default_int(config_setting_t *parent,
+                       const char *path,
+                       int value)
+{
+    config_setting_t *s = NULL;
+
+    s = config_create_path(parent, path, CONFIG_TYPE_INT);
+
+    /* if setting wasn't set before set it now */
+    if (s)
+        config_setting_set_int(s, value);
+}
+
+/*
  * logger_parse
  *      Turn logger argv into config_setting_t group
  */
