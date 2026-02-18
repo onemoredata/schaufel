@@ -218,8 +218,9 @@ The postgres producer can copy data into a table. The default format
 is \fIbagger\fR (copying to a predefined schema). Alternatively, the format
 can be given as \fBcsv\fR or \fBbinary\fR.
 .PP
-The producer commits every 2000 messages. No error handling is done after commit,
-if commiting data should fail the data is lost.
+The producer commits every 2000 messages by default, though this can be set with
+the pipeline attribute or -S command line option. No error handling is done 
+after commit, if commiting data should fail the data is lost.
 .RS
 producers = (
   {
@@ -229,6 +230,7 @@ producers = (
     dbname = "data";
     topic = "import";
     format = "csv";
+    pipeline = 1000;
   } );
 .RE
 .PP

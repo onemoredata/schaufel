@@ -32,6 +32,8 @@ config_setting_t *config_create_path(config_setting_t *parent,
 void config_set_default_string(config_setting_t *parent, const char *path,
    const char *value);
 
+void config_set_default_int(config_setting_t *parent, const char *path, 
+   int value);
 /* Macros to abstract config parsing
  * Check for existance of a config item */
 bool conf_lookup_is_string(config_setting_t *conf, const char *path, const char **res,
