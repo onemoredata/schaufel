@@ -21,13 +21,13 @@ typedef struct hptr {
 } *Hptr;
 
 typedef struct hooklist *Hooklist;
-Hooklist hook_init();
+Hooklist hook_init(void);
 
 void hooks_add(Hooklist hooks, config_setting_t *conf);
 void hook_free(Hooklist hooks);
-void hooks_register();
-void hooks_deregister();
-bool hooklist_run();
+void hooks_register(void);
+void hooks_deregister(void);
+bool hooklist_run(Hooklist, Message);
 bool hooks_validate(config_setting_t *conf);
 
 #endif
