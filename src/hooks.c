@@ -7,6 +7,7 @@
 #include "hooks/dummy.h"
 #include "hooks/xmark.h"
 #include "hooks/jsonexport.h"
+#include "hooks/chomp.h"
 
 typedef struct hooklist {
     uint64_t num;
@@ -38,21 +39,19 @@ static Hptr _find_hook(const char *name)
 void hooks_register()
 {
     /* todo:  dynamic module adding */
-    struct hptr dummy =
-        {"dummy",&h_dummy,&h_dummy_init,&h_dummy_validate,&h_dummy_free,NULL};
-    struct hptr xmark =
-        {"xmark",&h_xmark,&h_xmark_init,&h_xmark_validate,&h_xmark_free,NULL};
-    struct hptr jsonexport =
-        {"jsonexport",&h_jsonexport,&h_jsonexport_init,&h_jsonexport_validate,&h_jsonexport_free,NULL};
+    struct hptr hptrs[] = {
+        {"dummy",&h_dummy,&h_dummy_init,&h_dummy_validate,&h_dummy_free,NULL},
+        {"xmark",&h_xmark,&h_xmark_init,&h_xmark_validate,&h_xmark_free,NULL},
+        {"jsonexport",&h_jsonexport,&h_jsonexport_init,&h_jsonexport_validate,&h_jsonexport_free,NULL},
+        {"chomp",&h_chomp,&h_chomp_init,&h_chomp_validate,&h_chomp_free,NULL},
+        {"", NULL, NULL, NULL, NULL} /* terminator */
+    };
 
-    hooks_available = SCALLOC(4,sizeof(struct hptr)); // null terminator
+    /* dynamic allocation for architectural reasons. This list might change on
+     * reload in the future */
+    hooks_available = SCALLOC(sizeof(hptrs),sizeof(struct hptr));
 
-    memcpy(hooks_available,(void *) &dummy,
-        sizeof(struct hptr));
-    memcpy(hooks_available+1,(void *) &xmark,
-        sizeof(struct hptr));
-    memcpy(hooks_available+2,(void *) &jsonexport,
-        sizeof(struct hptr));
+    memcpy(hooks_available, hptrs, sizeof(hooks_available) * sizeof(struct hptr));
 
     return;
 }
@@ -95,6 +94,7 @@ inline bool hooklist_run(Hooklist h, Message msg)
  *      call each validator of all hooks registered
  */
 bool hooks_validate(config_setting_t *conf)
+
 {
     bool res = true;
 
